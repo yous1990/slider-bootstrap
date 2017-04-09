@@ -1,0 +1,177 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>slider</title>
+    <style>
+        .bordered {
+            border: 1px solid;
+        }
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        .slider {
+            display: flex;
+        }
+        #big-photo {
+            height: 100%;
+            width: 100%;
+        }
+        #photo-film {
+            height: 50px;
+            width: 100%;
+        }
+
+        .photo-picker {
+            display: flex;
+        }
+        button {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="slider-container bordered">
+    <div class="slider bordered">
+        <div id="left-btn" class="bordered">
+            <button onclick="getPrevPhoto()">prev 1 photo</button>
+        </div>
+        <div id="big-photo" class="bordered"></div>
+        <div id="right-btn" class="bordered">
+            <button onclick="getNextPhoto()">next 1 photo</button>
+        </div>
+    </div>
+    <div class="photo-picker bordered">
+        <div class="bordered">
+            <button id="left-mini-btn" onclick="getPrevFilm()">prev 5 photos</button>
+        </div>
+        <div id="photo-film" class="bordered"></div>
+        <div class="bordered">
+            <button id="right-mini-btn" onclick="getNextFilm()">next 5 photos</button>
+        </div>
+    </div>
+</div>
+<script>
+  var currentPos=0;
+  var depart = 0;
+  var arrival = 5;
+    var photos = ['https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Windows_logo_-_2012.svg/2000px-Windows_logo_-_2012.svg.png', 'https://vignette1.wikia.nocookie.net/logopedia/images/0/04/Linux_logo.png','https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Windows_logo_-_2012.svg/2000px-Windows_logo_-_2012.svg.png', 'https://vignette1.wikia.nocookie.net/logopedia/images/0/04/Linux_logo.png','https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Windows_logo_-_2012.svg/2000px-Windows_logo_-_2012.svg.png', 'https://vignette1.wikia.nocookie.net/logopedia/images/0/04/Linux_logo.png','https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Windows_logo_-_2012.svg/2000px-Windows_logo_-_2012.svg.png', 'https://vignette1.wikia.nocookie.net/logopedia/images/0/04/Linux_logo.png','https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Windows_logo_-_2012.svg/2000px-Windows_logo_-_2012.svg.png', 'https://vignette1.wikia.nocookie.net/logopedia/images/0/04/Linux_logo.png','https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Windows_logo_-_2012.svg/2000px-Windows_logo_-_2012.svg.png', 'https://vignette1.wikia.nocookie.net/logopedia/images/0/04/Linux_logo.png','https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Windows_logo_-_2012.svg/2000px-Windows_logo_-_2012.svg.png', 'https://vignette1.wikia.nocookie.net/logopedia/images/0/04/Linux_logo.png','https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Windows_logo_-_2012.svg/2000px-Windows_logo_-_2012.svg.png', 'https://vignette1.wikia.nocookie.net/logopedia/images/0/04/Linux_logo.png'];
+
+    // description: crée un élément html image
+    // arg1: la source de l'image de type string
+    // arg2: width number
+    // arg3: height number
+    // arg4: containerId string
+    // arg5: index number: l'index dans le tableau photos
+    function createImage(source, width, height, containerId, index){
+        var photo = document.createElement("img");
+        photo.setAttribute('src', source);
+        photo.setAttribute('height', '' + height);
+        photo.setAttribute('width', '' + width);
+        if(containerId === 'photo-film') {
+            photo.setAttribute('onclick', 'selectPhoto(' + index + ')');
+        }
+        document.getElementById(containerId).appendChild(photo);
+    }
+     //fonction qui parcourt le tableau d'un point depart :depart jusqua un pt d'arrivée: arrival
+     //prend 2 arguments : depart arrival
+      function populateFilm(){
+        document.getElementById('photo-film').innerHTML = '';
+        if(depart === arrival) {
+            createImage(photos[depart], 50, 50, 'photo-film', i);
+        }
+        else {
+          for (var i = depart; i < arrival; i++) {
+              createImage(photos[i], 50, 50, 'photo-film', i);
+          };
+        }
+      }
+
+    createImage(photos[0], 500, 500, 'big-photo');
+
+    // description: vide la div big-photo et rajoute la nouvelle photo sélectionnée big-photo
+    // arg1: index number: l'index dans le tableau photos de la photo qu'on a sélectionnée
+    function selectPhoto(index) {
+        currentPos = index ;
+        document.getElementById('big-photo').innerHTML = '';
+        createImage(photos[index], 500, 500, 'big-photo');
+    }
+    //description: aller sur la photo précedente
+    //arg1: elle ne prend rien
+
+    function getPrevPhoto(){
+      if (currentPos == 0){
+        // afficher la dernière image
+      currentPos = photos.length - 1;
+     }
+     else {
+      currentPos = currentPos - 1;
+     }
+      document.getElementById('big-photo').innerHTML = '';
+      createImage(photos[currentPos], 500, 500, 'big-photo');
+    }
+    //description: aller sur la photo suivante
+    //arg1: elle ne prend rien
+
+
+    function getNextPhoto(){
+      if (currentPos == photos.length - 1){
+        // afficher la dernière image
+      currentPos = 0;
+    }else{
+      currentPos = currentPos + 1;
+    }
+      document.getElementById('big-photo').innerHTML = '';
+      createImage(photos[currentPos], 500, 500, 'big-photo');
+    }
+
+    //fonction qui affiche les 5 images précédentes
+    function getPrevFilm(){
+      if (depart - 5 < 0){
+        depart = 0;
+        arrival = 5;
+        document.getElementById('left-mini-btn').setAttribute('disabled', true);
+      } //cas particulier depart =arrival
+      else if(depart === arrival){
+        document.getElementById('right-mini-btn').removeAttribute("disabled");
+        depart = depart - 5;
+      }
+      else { // bouton droit marche quand on retourne les foto
+        document.getElementById('right-mini-btn').removeAttribute("disabled");
+        depart = depart - 5;
+        arrival= arrival - 5;
+      }
+      populateFilm();
+    }
+
+    //fonction qui affiche les 5 images suivantes
+    function getNextFilm(){
+      if (arrival + 5 > photos.length -1){
+        depart = depart + 5;
+        arrival = photos.length - 1;
+        document.getElementById('right-mini-btn').setAttribute('disabled', true);
+      }
+      else {
+        depart = depart + 5;
+        arrival= arrival + 5;
+        document.getElementById('left-mini-btn').removeAttribute("disabled");
+      }
+      populateFilm();
+    }
+
+    populateFilm();
+
+
+
+
+
+</script>
+<script src=""></script>
+</body>
+</html>
